@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="dummy.calc.service" />
+
+
+    <!-- Register PayloadRootAnnotationMethodEndpointMapping -->
+    <bean  id="payloadMapping" class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping" >
+        <description>
+            This endpoint mapping uses the qualified name of the payload (body contents) to determine the endpoint for
+            an incoming message. Every message is passed to the default endpoint. Additionally, messages are logged
+            using the logging interceptor.
+        </description>
+       <property name="interceptors">
+            <list>
+                <ref local="validatingInterceptor"/>
+                <ref local="loggingInterceptor"/>
+            </list>
+        </property>
+    </bean>
+    
+     <bean id="validatingInterceptor"
+          class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+        <description>
+            This interceptor validates both incoming and outgoing message contents according to the 'xsd' XML
+            Schema file.
+        </description>
+        <property name="xsdSchema" ref="schema"/>
+        <property name="validateRequest" value="true"/>
+        <property name="validateResponse" value="true"/>
+    </bean>
+
+    <bean id="loggingInterceptor" class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
+        <description>
+            This interceptor logs the message payload.
+        </description>
+    </bean>
+
+    <!-- Register Endpoint -->
+    <bean id="calcEndpoint" class="dummy.calc.service.CalcEndpoint">
+        <description>
+            This endpoint handles requests.
+        </description>
+        <property name="calcService" ref="calcService"/>
+    </bean>
+
+    <bean id="calcService" class="dummy.calc.embedded.service.impl.CalcServiceImpl">
+        <description>
+            This bean is our "business" service.
+        </description>
+    </bean>
+
+    <!-- Configure XML Marshaller -->
+    <bean class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
+        <constructor-arg ref="marshaller" />
+    </bean>
+
+    <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"
+          p:contextPath="dummy.calc.bean">
+    </bean>
+
+    <!-- Add automatic WSDL generation support -->
+    <bean id="calc" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition"
+          p:portTypeName="calc"
+          p:locationUri="http://localhost:8080/calc/"
+          p:requestSuffix="-request"
+          p:responseSuffix="-response"
+          p:targetNamespace="http://dummy/calc">
+        <property name="schema">
+            <bean class="org.springframework.xml.xsd.SimpleXsdSchema"
+                  p:xsd="/WEB-INF/calc.xsd" />
+        </property>
+    </bean>
+
+    <bean id="schema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+        <property name="xsd" value="/WEB-INF/calc.xsd" />
+    </bean>
+
+</beans>

@@ -29,15 +29,14 @@ public class CalcEndpoint {
      */
     @PayloadRoot(localPart = "multiply-request", namespace = "http://dummy/calc")
     public GenericResponse doMultiply(MultiplyRequest request) {
-
+    	String operation="multiply";
         GenericResponse response = new GenericResponse();
                 //fill response
         response.setTerm1(request.getTerm1());
         response.setTerm2(request.getTerm2());
-        response.setOperation("multiply");
-        response.setResponse(calcService.processNumberTypeOperation(request.getTerm1(), request.getTerm2(), "multiply"));
+        response.setOperation(operation);
+        response.setResponse(calcService.processNumberTypeOperation(request.getTerm1(), request.getTerm2(), operation));
         return response;
-
     }
 
      /**
@@ -45,14 +44,13 @@ public class CalcEndpoint {
      */
     @PayloadRoot(localPart = "divide-request", namespace = "http://dummy/calc")
     public GenericResponse doDivide(DivideRequest request) {
-
+    	String operation="divide";
         GenericResponse response = new GenericResponse();
         response.setTerm1(request.getTerm1());
         response.setTerm2(request.getTerm2());
-        response.setOperation("multiply");
-        response.setResponse(calcService.processNumberTypeOperation(request.getTerm1(), request.getTerm2(), "divide"));
+        response.setOperation(operation);
+        response.setResponse(calcService.processNumberTypeOperation(request.getTerm1(), request.getTerm2(), operation));
         return response;
-
     }
 
 

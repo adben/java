@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://dummy/calc" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://dummy/calc" targetNamespace="http://dummy/calc">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:calc="http://dummy/calc" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://dummy/calc" xmlns:tns="http://dummy/calc">
+	<xsd:element name="multiply-request" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<xsd:complexType xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                                <xsd:attribute name="term1" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+                                <xsd:attribute name="term2" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+		</xsd:complexType>
+	</xsd:element>
+        <xsd:element name="divide-request" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<xsd:complexType xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                                <xsd:attribute name="term1" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+                                <xsd:attribute name="term2" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="generic-response" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<xsd:complexType xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                                <xsd:attribute name="term1" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+                                <xsd:attribute name="term2" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+                                <xsd:attribute name="operation" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+                                <xsd:attribute name="response" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="multiply-request">
+    <wsdl:part element="tns:multiply-request" name="multiply-request">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="divide-request">
+    <wsdl:part element="tns:divide-request" name="divide-request">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generic-response">
+    <wsdl:part element="tns:generic-response" name="generic-response">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="calc">
+    <wsdl:operation name="generic">
+      <wsdl:output message="tns:generic-response" name="generic-response">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="divide">
+      <wsdl:input message="tns:divide-request" name="divide-request">
+    </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="multiply">
+      <wsdl:input message="tns:multiply-request" name="multiply-request">
+    </wsdl:input>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="calcSoap11" type="tns:calc">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="generic">
+      <soap:operation soapAction=""/>
+      <wsdl:output name="generic-response">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="divide">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="divide-request">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="multiply">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="multiply-request">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="calcService">
+    <wsdl:port binding="tns:calcSoap11" name="calcSoap11">
+      <soap:address location="http://localhost:8080/calc/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
